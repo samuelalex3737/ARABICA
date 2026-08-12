@@ -35,7 +35,7 @@ const MetricCard = ({ title, value, status, description }) => {
              </div>
           </div>
         </div>
-        <div className={`text-3xl lg:text-4xl font-mono font-bold ${getStatusColor()}`}>
+        <div className={`text-2xl xl:text-3xl font-mono font-bold break-words ${getStatusColor()}`}>
           {value}
         </div>
       </div>

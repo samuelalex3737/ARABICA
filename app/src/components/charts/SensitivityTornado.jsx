@@ -17,7 +17,7 @@ export default function SensitivityTornado({ inputs }) {
     d3.select(d3Container.current).selectAll('*').remove();
     
     // Setup dimensions
-    const margin = { top: 30, right: 120, bottom: 40, left: 160 };
+    const margin = { top: 60, right: 120, bottom: 40, left: 160 };
     const width = d3Container.current.clientWidth - margin.left - margin.right;
     const height = Math.max(400, data.length * 60);
     
@@ -62,7 +62,11 @@ export default function SensitivityTornado({ inputs }) {
       .attr('transform', `translate(0,${height})`)
       .call(d3.axisBottom(x)
         .ticks(5)
-        .tickFormat(d => formatCurrency(d, 0))
+        .tickFormat(d => {
+          if (Math.abs(d) >= 1000000) return `AED ${(d / 1000000).toFixed(1)}M`;
+          if (Math.abs(d) >= 1000) return `AED ${(d / 1000).toFixed(0)}k`;
+          return `AED ${d}`;
+        })
       )
       .selectAll('text')
       .style('fill', 'var(--text-muted)')
@@ -160,25 +164,6 @@ export default function SensitivityTornado({ inputs }) {
         d3.select(this).attr('opacity', 0.8);
         tooltip.classed('hidden', true);
       });
-      
-    // Add value labels to the ends of the bars
-    barGroups.append('text')
-      .attr('x', d => d.minus20 > baseNPV ? Math.max(x(d.minus20), x(d.plus20)) + 5 : Math.min(x(d.minus20), x(d.plus20)) - 5)
-      .attr('y', y.bandwidth() / 2 + 4)
-      .attr('text-anchor', d => d.minus20 > baseNPV ? 'start' : 'end')
-      .style('fill', 'var(--text-muted)')
-      .style('font-size', '11px')
-      .style('font-family', 'var(--font-mono)')
-      .text(d => formatCurrency(Math.min(d.minus20, d.plus20), 0));
-      
-    barGroups.append('text')
-      .attr('x', d => d.plus20 > baseNPV ? Math.max(x(d.minus20), x(d.plus20)) + 5 : Math.min(x(d.minus20), x(d.plus20)) - 5)
-      .attr('y', y.bandwidth() / 2 + 4)
-      .attr('text-anchor', d => d.plus20 > baseNPV ? 'start' : 'end')
-      .style('fill', 'var(--text-muted)')
-      .style('font-size', '11px')
-      .style('font-family', 'var(--font-mono)')
-      .text(d => formatCurrency(Math.max(d.minus20, d.plus20), 0));
 
   }, [inputs]);
 

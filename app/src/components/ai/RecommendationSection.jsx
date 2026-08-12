@@ -35,11 +35,11 @@ export default function RecommendationSection() {
       </div>
 
       <a 
-        href="/report.tex" 
-        download="ARABICA_Capital_Budgeting_Report.tex"
+        href="/Report.pdf" 
+        download="ARABICA_Capital_Budgeting_Report.pdf"
         className="inline-flex items-center gap-3 px-8 py-4 bg-[var(--accent-copper)] hover:bg-[var(--accent-gold)] text-[var(--bg-primary)] font-bold text-lg rounded-full transition-colors group"
       >
-        Download LaTeX Report
+        Download Full Report (PDF)
         <Download size={20} className="group-hover:-translate-y-1 transition-transform" />
       </a>
     </div>

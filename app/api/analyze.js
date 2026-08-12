@@ -11,8 +11,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing inputs or results data.' });
     }
 
-    // Use Grok API key from environment variable (support both names)
-    const apiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
+    // Use Groq API key from environment variable
+    const apiKey = process.env.GROQ_API_KEY || process.env.GROK_API_KEY || process.env.XAI_API_KEY;
     
     if (!apiKey) {
       // Return a simulated response if API key is missing (e.g., local dev)
@@ -61,17 +61,17 @@ ML Model Accept Probability: ${(mlProbability * 100).toFixed(1)}%
 
 Provide your analysis in the requested JSON format only.`;
 
-    // Grok uses OpenAI-compatible API format
-    const response = await fetch('https://api.x.ai/v1/chat/completions', {
+    // Groq uses OpenAI-compatible API format
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'grok-4.5',
+        model: 'llama3-8b-8192',
         temperature: 0.3,
-        max_tokens: 1000,
+        response_format: { type: "json_object" },
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
@@ -81,22 +81,22 @@ Provide your analysis in the requested JSON format only.`;
 
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error('Grok API Error:', response.status, errorBody);
-      throw new Error(`Grok API returned status ${response.status}: ${errorBody}`);
+      console.error('Groq API Error:', response.status, errorBody);
+      throw new Error(`Groq API returned status ${response.status}: ${errorBody}`);
     }
 
     const data = await response.json();
     const rawText = data.choices?.[0]?.message?.content;
 
     if (!rawText) {
-      throw new Error('Empty response from Grok API');
+      throw new Error('Empty response from Groq API');
     }
 
     try {
       const parsedJson = JSON.parse(rawText);
       return res.status(200).json(parsedJson);
     } catch (parseError) {
-      // In case Grok returns markdown-wrapped JSON
+      // In case the model returns markdown-wrapped JSON
       const cleanedText = rawText.replace(/```json\n?|\n?```/g, '').trim();
       return res.status(200).json(JSON.parse(cleanedText));
     }

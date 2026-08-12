@@ -51,7 +51,7 @@ export default function SensitivityTornado({ inputs }) {
       .attr('class', 'grid')
       .attr('transform', `translate(0,${height})`)
       .call(d3.axisBottom(x)
-        .ticks(5)
+        .ticks(3)
         .tickSize(-height)
         .tickFormat('')
       )
@@ -61,7 +61,7 @@ export default function SensitivityTornado({ inputs }) {
     svg.append('g')
       .attr('transform', `translate(0,${height})`)
       .call(d3.axisBottom(x)
-        .ticks(5)
+        .ticks(3)
         .tickFormat(d => {
           if (Math.abs(d) >= 1000000) return `AED ${(d / 1000000).toFixed(1)}M`;
           if (Math.abs(d) >= 1000) return `AED ${(d / 1000).toFixed(0)}k`;

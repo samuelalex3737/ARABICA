@@ -126,14 +126,14 @@ const AnalysisSection = ({ inputs }) => (
     <div className="max-w-6xl mx-auto">
       <h2 className="text-4xl font-bold text-[var(--accent-copper)] mb-12">Risk & Sensitivity Analysis</h2>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="glass-panel p-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="glass-panel p-8 lg:col-span-7">
           <h3 className="text-2xl font-bold text-white mb-6">Tornado Chart (NPV Sensitivity)</h3>
           <p className="text-[var(--text-muted)] mb-8">Measures the impact of ±20% variations in single variables on the Base NPV.</p>
           <SensitivityTornado inputs={inputs} />
         </div>
         
-        <div className="glass-panel p-8">
+        <div className="glass-panel p-8 lg:col-span-5">
           <h3 className="text-2xl font-bold text-white mb-6">Scenario Analysis</h3>
           <p className="text-[var(--text-muted)] mb-8">Comparing Best, Base, and Worst case outcomes.</p>
           <ScenarioAnalysis inputs={inputs} />

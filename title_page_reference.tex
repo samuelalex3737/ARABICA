@@ -1,0 +1,44 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{eso-pic}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{xcolor}
+
+% Single-line black border on every page
+\AddToShipoutPictureBG{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[black, line width=0.8pt]
+      ($(current page.north west)+(1.2cm,-1.2cm)$) rectangle
+      ($(current page.south east)+(-1.2cm,1.2cm)$);
+  \end{tikzpicture}
+}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+\vspace*{3.2cm}
+
+{\Huge \textbf{[Project Codename]}}\\[0.5cm]
+{\Large \textit{[Subtitle, framed as a question?]}}\\[2.2cm]
+
+{\large \textbf{Corporate Finance}}\\[0.5cm]
+\parbox{11cm}{\centering Submitted for the partial fulfilment of the requirements of the Corporate Finance module of the Master of Artificial Intelligence in Business.}\\[2.5cm]
+
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{rl}
+\textbf{Subject:} & Corporate Finance \\
+\textbf{Instructor:} & [Instructor Name] \\
+\textbf{Student:} & Samuel Alex (AS25DXB031) \\
+\end{tabular}
+
+\vfill
+
+\textit{Topic X --- [one-line description of the chosen investment scenario]}
+
+\vspace*{1.6cm}
+\end{center}
+
+\end{document}

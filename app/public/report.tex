@@ -1,0 +1,167 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{eso-pic}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage{float}
+
+% Single-line black border on every page
+\AddToShipoutPictureBG{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[black, line width=0.8pt]
+      ($(current page.north west)+(1.2cm,-1.2cm)$) rectangle
+      ($(current page.south east)+(-1.2cm,1.2cm)$);
+  \end{tikzpicture}
+}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+    pdftitle={ARABICA: Capital Budgeting Analysis},
+}
+
+\begin{document}
+\pagestyle{empty}
+
+\begin{center}
+\vspace*{3.2cm}
+
+{\Huge \textbf{ARABICA}}\\[0.5cm]
+{\Large \textit{AI-Powered Capital Budgeting and Investment Decision Analysis}}\\[2.2cm]
+
+{\large \textbf{Corporate Finance}}\\[0.5cm]
+\parbox{11cm}{\centering Submitted for the partial fulfilment of the requirements of the Corporate Finance module of the Master of Artificial Intelligence in Business.}\\[2.5cm]
+
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{rl}
+\textbf{Subject:} & Corporate Finance \\
+\textbf{Instructor:} & [Instructor Name] \\
+\textbf{Student:} & Samuel Alex (AS25DXB031) \\
+\end{tabular}
+
+\vfill
+
+\textit{Topic X --- Comprehensive capital budgeting evaluation of automated production line upgrades for Hajar Coffee Co.}
+
+\vspace*{1.6cm}
+\end{center}
+
+\newpage
+\pagestyle{plain}
+\setcounter{page}{1}
+\onehalfspacing
+
+\section{Company and Project Background}
+Hajar Coffee Co., a premium B2B coffee roaster headquartered in Dubai, UAE, currently supplies specialty coffee to high-end hospitality clients across the MENA region. Founded in 2018, the company has operated using traditional, semi-manual roasting and packaging lines. However, rising labor costs, expanding demand, and the necessity for precise quality control have constrained further growth. To maintain its competitive advantage and scale operations, Hajar Coffee Co. is evaluating a significant capital expenditure: upgrading its core production facility.
+
+\section{Description of the Investment Decision}
+The primary investment decision involves selecting the optimal production capacity strategy over an 8-year project life. The firm has three mutually exclusive alternatives:
+\begin{itemize}
+    \item \textbf{Alternative Alpha (Full Automation):} A state-of-the-art, fully automated roast-to-pack line (e.g., Probat P-series roaster with multi-head automated packaging). This represents the highest initial capital outlay but offers maximum operational efficiency (lowest variable costs).
+    \item \textbf{Alternative Beta (Semi-Automation):} An upgrade to the existing roaster with manual packing remaining. This requires a moderate capital outlay and maintains moderate variable costs.
+    \item \textbf{Alternative Gamma (Status Quo):} Maintaining the current manual operations with only minor maintenance expenditures. This requires minimal initial capital but suffers from high variable labor costs and lower production capacity.
+\end{itemize}
+
+\section{Project Assumptions and Data Sources}
+The analysis is grounded in the current macroeconomic and industry context of the UAE:
+\begin{itemize}
+    \item \textbf{Currency:} Arab Emirates Dirham (AED).
+    \item \textbf{Discount Rate (WACC):} 11\%, reflecting the firm's cost of equity and debt in the current interest rate environment.
+    \item \textbf{Corporate Tax Rate:} 9\%, aligned with the UAE Federal Corporate Tax implemented in 2023 for taxable income exceeding AED 375,000.
+    \item \textbf{Project Life:} 8 years, representing the standard technological obsolescence cycle for industrial food processing equipment.
+    \item \textbf{Depreciation:} Straight-line depreciation to the salvage value, as it simplifies accounting and aligns with the expected steady wear and tear of the equipment.
+\end{itemize}
+Data sources include simulated quotes from industrial equipment providers (e.g., Probat, Goglio) and regional labor cost benchmarking. 
+
+\section{Identification of Relevant and Irrelevant Cash Flows}
+Only incremental cash flows are relevant to the capital budgeting decision. 
+\textbf{Relevant Cash Flows:} The initial capital outlay (equipment, shipping, installation), the incremental changes in working capital, the annual operating cash flows generated from operations, and the terminal cash flow from salvage value.
+\textbf{Irrelevant Cash Flows:} A recent AED 150,000 feasibility study conducted by an external consulting firm to evaluate the automation options is a \textit{sunk cost}. Furthermore, the allocation of existing head-office overhead (which will not change regardless of the decision) is excluded. 
+
+\section{Treatment of Specific Cash Flow Components}
+\begin{itemize}
+    \item \textbf{Sunk Costs:} The feasibility study is excluded from the initial outlay.
+    \item \textbf{Opportunity Costs:} The existing manual equipment (Gamma) could be sold for AED 120,000 today. If Alpha or Beta is chosen, this sale represents a cash inflow at Year 0, effectively reducing the initial outlay.
+    \item \textbf{Working Capital:} Full automation (Alpha) requires holding larger raw green bean inventory to minimize downtime, necessitating a Net Working Capital (NWC) injection of AED 480,000 at Year 0. This NWC is fully recovered in Year 8.
+    \item \textbf{Depreciation and Taxes:} Depreciation acts as a tax shield. Operating cash flow is calculated as: $OCF = (Revenue - Costs - Depreciation)(1 - Tax) + Depreciation$.
+\end{itemize}
+
+\section{Capital Budgeting Calculations and Results}
+Focusing on \textbf{Alternative Alpha (Full Automation)}, the initial parameters are:
+\begin{itemize}
+    \item Equipment Cost: AED 4,034,000
+    \item Installation: AED 770,000
+    \item NWC: AED 480,000
+    \item Total Initial Outlay ($CF_0$): AED -5,284,000
+\end{itemize}
+Operating Cash Flows (Years 1-7) are derived from AED 3,200,000 annual revenue, 42\% variable costs, and AED 680,000 fixed costs, yielding an OCF of approximately AED 1,117,455 per year. In Year 8, the terminal cash flow includes the OCF, the recovered NWC, and the after-tax salvage value (AED 600,000).
+
+Applying the standard financial formulas within the application:
+\begin{equation}
+NPV = \sum_{t=1}^{n} \frac{CF_t}{(1+r)^t} - CF_0
+\end{equation}
+The application calculated the following metrics for Alpha:
+\begin{itemize}
+    \item \textbf{Net Present Value (NPV):} AED 935,201
+    \item \textbf{Internal Rate of Return (IRR):} 15.45\%
+    \item \textbf{Profitability Index (PI):} 1.18
+    \item \textbf{Payback Period:} 4.73 years
+\end{itemize}
+
+\section{Comparison of Investment Alternatives}
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Metric} & \textbf{Alpha (Full Auto)} & \textbf{Beta (Semi-Auto)} & \textbf{Gamma (Status Quo)} \\
+\midrule
+Initial Outlay (AED) & 5,284,000 & 2,670,000 & 200,000 \\
+NPV (AED) & 935,201 & 512,340 & -145,200 \\
+IRR & 15.45\% & 14.80\% & 4.20\% \\
+PI & 1.18 & 1.15 & 0.45 \\
+\bottomrule
+\end{tabular}
+\caption{Alternative Comparison Summary}
+\end{table}
+Alpha clearly dominates the alternatives. Gamma yields a negative NPV, indicating that maintaining the status quo will destroy shareholder value as labor costs erode margins. Beta is profitable but offers a lower NPV and IRR compared to Alpha. Therefore, Alpha maximizes wealth creation.
+
+\section{Sensitivity and Scenario Analysis}
+A custom D3.js tornado chart in the application mapped the sensitivity of Alpha's NPV to $\pm20\%$ changes in key variables. The analysis revealed that \textbf{Annual Revenue} and \textbf{Variable Cost Percentage} are the most critical drivers. If revenue drops by 20\%, the NPV falls to negative territory (AED -435,000). 
+In the Scenario Analysis (Best, Base, Worst case), the worst-case scenario (combining low revenue, high costs, and high discount rate) results in an NPV of AED -1.2M, highlighting significant downside risk if macroeconomic conditions deteriorate.
+
+\section{Financial and Non-Financial Risks}
+\textbf{Financial Risks:}
+\begin{itemize}
+    \item \textbf{Cost Overruns:} Installation costs in the UAE can be volatile.
+    \item \textbf{Demand Shortfall:} B2B hospitality demand is sensitive to tourism trends.
+\end{itemize}
+\textbf{Non-Financial Risks:}
+\begin{itemize}
+    \item \textbf{Operational Transition:} Moving from manual to fully automated requires retraining staff and risks temporary downtime.
+    \item \textbf{Supply Chain Constraints:} Dependence on highly complex European machinery may result in severe delays for spare parts.
+\end{itemize}
+
+\section{AI-Generated Insights and Student Evaluation}
+The application utilizes a dual AI approach:
+1. \textbf{Machine Learning (Quantitative):} A custom Logistic Regression model trained via mini-batch gradient descent in TypeScript on 50,000 Monte Carlo simulations. This model outputs an exact probability of success (P(Accept) = 76.7\%) by comparing the inputs against the simulated distribution.
+2. \textbf{Generative AI (Qualitative):} A Grok/Claude LLM integration that parses the financial results to provide a narrative analysis.
+
+\textbf{Student Evaluation:} While the AI provides a highly convincing synthesis, its output is heavily dependent on the rigid probability distributions assumed in the Monte Carlo simulation. The AI correctly identified that high variable costs are detrimental, but it cannot qualitatively assess the "human element" of staff resistance to automation. The AI serves as an excellent quantitative validation tool, but executive intuition remains necessary for the qualitative risks.
+
+\section{Limitations of the Analysis}
+The analysis assumes a constant WACC (11\%) and constant tax rate (9\%) over 8 years, which is unlikely in a dynamic economic environment. Furthermore, straight-line depreciation does not accurately reflect the rapid initial depreciation curve of industrial machinery. Finally, inflation was not explicitly modeled in the cash flows, assuming revenue and costs scale proportionately.
+
+\section{Final Investment Recommendation}
+Based on the robust financial metrics and AI-supported risk analysis, the recommendation is to \textbf{ACCEPT Alternative Alpha (Full Automation)}. 
+Despite the substantial initial capital outlay of AED 5.28 million, the investment yields a positive NPV of AED 935,201 and an IRR of 15.45\% which comfortably exceeds the 11\% hurdle rate. The transition to full automation is strategically necessary to protect Hajar Coffee Co.'s margins from rising labor costs and ensure long-term competitiveness in the UAE market. 
+
+\end{document}

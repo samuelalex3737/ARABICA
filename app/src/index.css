@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Exact Phase 2 Design Spec Hex Codes */
+  --bg-primary: #0A0A0F;
+  --bg-secondary: #141419;
+  --bg-elevated: #1E1E26;
+  
+  --accent-copper: #C97B3A;
+  --accent-gold: #E8C47C;
+  --accent-espresso: #5C3D2E;
+  
+  --accent-green: #7FB069;
+  --accent-burgundy: #C75B7A;
+  
+  --text-primary: #F5E6CC;
+  --text-muted: #8A8A9A;
+
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+@layer components {
+  /* Glassmorphism treatment from Phase 2 spec Section 6.1 */
+  .glass-panel {
+    background-color: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 1rem;
+  }
+}

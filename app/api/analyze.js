@@ -82,7 +82,7 @@ Provide your analysis in the requested JSON format only.`;
     if (!response.ok) {
       const errorBody = await response.text();
       console.error('Grok API Error:', response.status, errorBody);
-      throw new Error(`Grok API returned status ${response.status}`);
+      throw new Error(`Grok API returned status ${response.status}: ${errorBody}`);
     }
 
     const data = await response.json();

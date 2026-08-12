@@ -91,20 +91,26 @@ function ClaudeInsightsInner({ inputs, results, mlProbability }) {
         normalized.narrative = 'AI analysis completed successfully but returned an unexpected format.';
       }
 
+      // Helper: extract a readable string from an item that might be a string or an object
+      const toReadableString = (item) => {
+        if (typeof item === 'string') return item;
+        if (typeof item === 'object' && item !== null) {
+          // Try common property names the LLM might use
+          return item.title || item.name || item.description || item.driver || item.risk || item.text || item.value || JSON.stringify(item);
+        }
+        return String(item);
+      };
+
       // Normalize keyDrivers
-      if (Array.isArray(data.keyDrivers)) {
-        normalized.keyDrivers = data.keyDrivers.map(String);
-      } else if (Array.isArray(data.key_drivers)) {
-        normalized.keyDrivers = data.key_drivers.map(String);
-      } else if (Array.isArray(data.drivers)) {
-        normalized.keyDrivers = data.drivers.map(String);
+      const rawDrivers = data.keyDrivers || data.key_drivers || data.drivers || data.keyValueDrivers || data.key_value_drivers || [];
+      if (Array.isArray(rawDrivers)) {
+        normalized.keyDrivers = rawDrivers.map(toReadableString);
       }
 
       // Normalize risks
-      if (Array.isArray(data.risks)) {
-        normalized.risks = data.risks.map(String);
-      } else if (Array.isArray(data.key_risks)) {
-        normalized.risks = data.key_risks.map(String);
+      const rawRisks = data.risks || data.key_risks || data.primaryRisks || data.primary_risks || [];
+      if (Array.isArray(rawRisks)) {
+        normalized.risks = rawRisks.map(toReadableString);
       }
 
       setAnalysis(normalized);

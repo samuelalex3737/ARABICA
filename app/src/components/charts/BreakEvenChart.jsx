@@ -63,7 +63,7 @@ export default function BreakEvenChart({ inputs }) {
   return (
     <div className="w-full h-80">
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={data} margin={{ top: 20, right: 30, left: 40, bottom: 20 }}>
+        <ComposedChart data={data} margin={{ top: 20, right: 30, left: 40, bottom: 40 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
           
           <XAxis 
@@ -71,7 +71,7 @@ export default function BreakEvenChart({ inputs }) {
             tickFormatter={(value) => `${value / 1000000}M`}
             tick={{ fill: 'var(--text-muted)' }} 
             axisLine={{ stroke: 'rgba(255,255,255,0.2)' }}
-            label={{ value: 'Revenue (AED)', position: 'insideBottom', offset: -10, fill: 'var(--text-muted)' }}
+            label={{ value: 'Revenue (AED)', position: 'bottom', offset: 0, fill: 'var(--text-muted)' }}
           />
           
           <YAxis 
@@ -82,7 +82,7 @@ export default function BreakEvenChart({ inputs }) {
           />
           
           <Tooltip content={<CustomTooltip />} />
-          <Legend />
+          <Legend wrapperStyle={{ paddingTop: "25px" }} />
           
           <Line 
             type="monotone" 

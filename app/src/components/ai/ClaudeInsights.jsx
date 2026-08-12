@@ -112,7 +112,9 @@ export default function ClaudeInsights({ inputs, results, mlProbability }) {
           <div>
             <h3 className="text-xl font-bold text-white mb-4">Executive Narrative</h3>
             <div className="text-[var(--text-primary)] leading-relaxed space-y-4">
-              {analysis.narrative.split('\n\n').map((para, i) => (
+              {Array.isArray(analysis.narrative) 
+                ? analysis.narrative.map((para, i) => <p key={i}>{para}</p>)
+                : (analysis.narrative || "No narrative provided.").toString().split('\n\n').map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
             </div>
@@ -122,7 +124,7 @@ export default function ClaudeInsights({ inputs, results, mlProbability }) {
             <div className="p-6 bg-[var(--bg-secondary)] rounded-xl border border-[var(--accent-green)]/30">
               <h3 className="text-lg font-bold text-[var(--accent-green)] mb-4">Key Value Drivers</h3>
               <ul className="space-y-2">
-                {analysis.keyDrivers.map((driver, i) => (
+                {(analysis.keyDrivers || []).map((driver, i) => (
                   <li key={i} className="flex items-start gap-2">
                     <span className="text-[var(--accent-green)] mt-1">•</span>
                     <span>{driver}</span>
@@ -134,7 +136,7 @@ export default function ClaudeInsights({ inputs, results, mlProbability }) {
             <div className="p-6 bg-[var(--bg-secondary)] rounded-xl border border-[var(--accent-burgundy)]/30">
               <h3 className="text-lg font-bold text-[var(--accent-burgundy)] mb-4">Primary Risks</h3>
               <ul className="space-y-2">
-                {analysis.risks.map((risk, i) => (
+                {(analysis.risks || []).map((risk, i) => (
                   <li key={i} className="flex items-start gap-2">
                     <span className="text-[var(--accent-burgundy)] mt-1">•</span>
                     <span>{risk}</span>

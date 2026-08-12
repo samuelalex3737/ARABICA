@@ -66,11 +66,16 @@ export default function MetricsDashboard({ results, inputs }) {
                  : results.paybackPeriod < inputs.projectLife ? 'warning'
                  : 'danger';
 
+  const dppStatus = results.discountedPaybackPeriod === null ? 'danger'
+                  : results.discountedPaybackPeriod < (inputs.projectLife / 2) ? 'success'
+                  : results.discountedPaybackPeriod < inputs.projectLife ? 'warning'
+                  : 'danger';
+
   // ARR rule of thumb: > WACC is acceptable
   const arrStatus = results.arr > inputs.wacc ? 'success' : 'warning';
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl mx-auto">
       <MetricCard 
         title="Net Present Value (NPV)" 
         value={formatCurrency(results.npv, 0)} 
@@ -104,6 +109,13 @@ export default function MetricsDashboard({ results, inputs }) {
         value={formatYears(results.paybackPeriod)} 
         status={ppStatus}
         description="Time required to recover the initial investment from nominal cash flows."
+      />
+      
+      <MetricCard 
+        title="Discounted Payback" 
+        value={formatYears(results.discountedPaybackPeriod)} 
+        status={dppStatus}
+        description="Time required to recover the initial investment from discounted cash flows. Accounts for the time value of money."
       />
       
       <MetricCard 

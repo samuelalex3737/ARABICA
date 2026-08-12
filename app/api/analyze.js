@@ -11,8 +11,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing inputs or results data.' });
     }
 
-    // Use Grok API key from environment variable
-    const apiKey = process.env.XAI_API_KEY;
+    // Use Grok API key from environment variable (support both names)
+    const apiKey = process.env.GROK_API_KEY || process.env.XAI_API_KEY;
     
     if (!apiKey) {
       // Return a simulated response if API key is missing (e.g., local dev)

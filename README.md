@@ -1,15 +1,14 @@
 # ARABICA — AI-Powered Capital Budgeting Engine
 
-A full-stack capital budgeting web application that evaluates three mutually exclusive automation investment alternatives for **Hajar Coffee Co.**, a premium B2B coffee roaster in Dubai. Built for a Corporate Finance individual assignment at **SP Jain School of Global Management**.
+A full-stack capital budgeting web application that evaluates three mutually exclusive automation investment alternatives for **Hajar Coffee Co.**, a premium B2B coffee roaster in Dubai.
 
 <p align="center">
   <img src="docs/hero-screenshot.png" alt="ARABICA Dashboard" width="800" />
 </p>
 
-| | |
-|---|---|
-| **Live App** | [arabica-a5gq.vercel.app](https://arabica-a5gq.vercel.app/) |
-| **Full Report (PDF)** | [`CF_individual_assignment.pdf`](CF_individual_assignment.pdf) |
+
+ **Live App** | [arabica-a5gq.vercel.app](https://arabica-a5gq.vercel.app/) 
+
 
 ---
 

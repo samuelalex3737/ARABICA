@@ -25,7 +25,7 @@ const HeroSection = () => {
   return (
     <section id="hero" className="min-h-screen flex flex-col items-center justify-center relative z-10 text-center px-4">
       <div className="glass-panel p-12 max-w-3xl flex flex-col items-center">
-        <h1 className="text-6xl md:text-8xl font-heading font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent-copper)] via-[var(--accent-gold)] to-[var(--accent-cream)] mb-4 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+        <h1 className="text-6xl md:text-8xl font-heading font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent-copper via-accent-gold to-accent-cream mb-4 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           ARABICA
         </h1>
         <p className="text-xl md:text-2xl text-[var(--text-muted)] mb-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">

@@ -66,7 +66,7 @@ export default function ClaudeInsights({ inputs, results, mlProbability }) {
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-[var(--glass-border)]">
         <div className="flex items-center gap-3">
           <Cpu className="text-[var(--accent-copper)]" size={28} />
-          <h2 className="text-2xl font-bold text-white">Claude AI Analyst</h2>
+          <h2 className="text-2xl font-bold text-white">Grok AI Analyst</h2>
         </div>
         
         <button 

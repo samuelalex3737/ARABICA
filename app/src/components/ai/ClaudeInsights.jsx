@@ -28,7 +28,7 @@ export default function ClaudeInsights({ inputs, results, mlProbability }) {
       if (contentType && contentType.indexOf("application/json") !== -1) {
         const data = await response.json();
         if (!response.ok) {
-          throw new Error(data.error || 'Failed to fetch analysis');
+          throw new Error(data.details ? `${data.error}: ${data.details}` : data.error || 'Failed to fetch analysis');
         }
         setAnalysis(data);
       } else {

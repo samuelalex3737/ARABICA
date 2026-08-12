@@ -69,7 +69,7 @@ Provide your analysis in the requested JSON format only.`;
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'grok-3-mini',
+        model: 'grok-beta',
         temperature: 0.3,
         max_tokens: 1000,
         messages: [

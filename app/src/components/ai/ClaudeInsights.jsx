@@ -1,64 +1,126 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, Component } from 'react';
 import { Cpu, Loader2, CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
 
-export default function ClaudeInsights({ inputs, results, mlProbability }) {
+// Local Error Boundary so if this component crashes, only this panel shows the error
+class InsightsErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, errorMsg: '' };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, errorMsg: error?.message || 'Unknown render error' };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="glass-panel p-8 w-full">
+          <div className="p-4 bg-[var(--accent-burgundy)]/20 border border-[var(--accent-burgundy)] rounded-lg text-[var(--text-primary)]">
+            <strong>AI Analyst encountered a rendering error:</strong> {this.state.errorMsg}
+            <br />
+            <button
+              onClick={() => this.setState({ hasError: false, errorMsg: '' })}
+              className="mt-4 px-4 py-2 bg-[var(--accent-copper)] text-[var(--bg-primary)] rounded-full font-bold text-sm"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function ClaudeInsightsInner({ inputs, results, mlProbability }) {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Re-run analysis when inputs change substantially (debounced conceptually, here we use a manual trigger or useEffect)
-  // For this app, we will add a button to generate the report so we don't spam the API on every slider tweak.
-  
   const generateAnalysis = async () => {
     setLoading(true);
     setError(null);
     setAnalysis(null);
 
     try {
-      // In development (Vite), this needs to hit the API route if hosted, or mock it locally.
-      // We will hit the /api/analyze endpoint which works on Vercel.
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ inputs, results, mlProbability })
       });
 
-      const contentType = response.headers.get("content-type");
-      
-      if (contentType && contentType.indexOf("application/json") !== -1) {
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.details ? `${data.error}: ${data.details}` : data.error || 'Failed to fetch analysis');
+      // Read response as text first so we never fail on .json()
+      const rawText = await response.text();
+
+      if (!response.ok) {
+        // Try to extract a detailed message
+        try {
+          const errData = JSON.parse(rawText);
+          throw new Error(errData.details || errData.error || `Server error ${response.status}`);
+        } catch {
+          throw new Error(rawText || `Server error ${response.status}`);
         }
-        setAnalysis(data);
-      } else {
-        // Fallback for local Vite dev server (Vercel API routes don't work locally without Vercel CLI)
-        setTimeout(() => {
-          setAnalysis({
-            recommendation: "Accept",
-            confidence: "High",
-            narrative: "This is a simulated AI response for local development since the Vercel API route is not running. Based on the robust NPV, favorable IRR, and the AI model's high probability score, this scenario presents strong financial viability. The capital expenditure is well-justified by the operational cost savings over the project life.",
-            keyDrivers: ["Strong NPV Margin", "Operational Efficiency", "AI Probability Score"],
-            risks: ["Market volatility", "Equipment depreciation"]
-          });
-          setLoading(false);
-        }, 1500);
-        return;
       }
+
+      // Parse JSON safely
+      let data;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error('Server returned invalid JSON: ' + rawText.substring(0, 200));
+      }
+
+      // Normalize the response — no matter what shape Groq returns, force it into our expected schema
+      const normalized = {
+        recommendation: String(data.recommendation || data.decision || data.verdict || 'N/A'),
+        confidence: String(data.confidence || data.confidence_level || 'Medium'),
+        narrative: '',
+        keyDrivers: [],
+        risks: []
+      };
+
+      // Normalize narrative
+      if (typeof data.narrative === 'string') {
+        normalized.narrative = data.narrative;
+      } else if (Array.isArray(data.narrative)) {
+        normalized.narrative = data.narrative.join('\n\n');
+      } else if (typeof data.analysis === 'string') {
+        normalized.narrative = data.analysis;
+      } else if (typeof data.summary === 'string') {
+        normalized.narrative = data.summary;
+      } else {
+        normalized.narrative = 'AI analysis completed successfully but returned an unexpected format.';
+      }
+
+      // Normalize keyDrivers
+      if (Array.isArray(data.keyDrivers)) {
+        normalized.keyDrivers = data.keyDrivers.map(String);
+      } else if (Array.isArray(data.key_drivers)) {
+        normalized.keyDrivers = data.key_drivers.map(String);
+      } else if (Array.isArray(data.drivers)) {
+        normalized.keyDrivers = data.drivers.map(String);
+      }
+
+      // Normalize risks
+      if (Array.isArray(data.risks)) {
+        normalized.risks = data.risks.map(String);
+      } else if (Array.isArray(data.key_risks)) {
+        normalized.risks = data.key_risks.map(String);
+      }
+
+      setAnalysis(normalized);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'An unknown error occurred');
     } finally {
       setLoading(false);
     }
   };
 
   const getRecommendationIcon = (rec) => {
-    switch(rec?.toLowerCase()) {
-      case 'accept': return <CheckCircle className="text-[var(--accent-green)]" size={32} />;
-      case 'reject': return <XCircle className="text-[var(--accent-burgundy)]" size={32} />;
-      case 'hold': return <AlertTriangle className="text-[var(--accent-gold)]" size={32} />;
-      default: return null;
-    }
+    const r = (rec || '').toLowerCase();
+    if (r.includes('accept')) return <CheckCircle className="text-[var(--accent-green)]" size={32} />;
+    if (r.includes('reject')) return <XCircle className="text-[var(--accent-burgundy)]" size={32} />;
+    if (r.includes('hold')) return <AlertTriangle className="text-[var(--accent-gold)]" size={32} />;
+    return null;
   };
 
   return (
@@ -93,7 +155,7 @@ export default function ClaudeInsights({ inputs, results, mlProbability }) {
       )}
 
       {analysis && (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-8">
           <div className="flex items-center gap-6 p-6 bg-[var(--bg-secondary)] rounded-xl border border-[var(--glass-border)]">
             {getRecommendationIcon(analysis.recommendation)}
             <div>
@@ -112,41 +174,51 @@ export default function ClaudeInsights({ inputs, results, mlProbability }) {
           <div>
             <h3 className="text-xl font-bold text-white mb-4">Executive Narrative</h3>
             <div className="text-[var(--text-primary)] leading-relaxed space-y-4">
-              {Array.isArray(analysis.narrative) 
-                ? analysis.narrative.map((para, i) => <p key={i}>{para}</p>)
-                : (analysis.narrative || "No narrative provided.").toString().split('\n\n').map((para, i) => (
+              {analysis.narrative.split('\n\n').map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="p-6 bg-[var(--bg-secondary)] rounded-xl border border-[var(--accent-green)]/30">
-              <h3 className="text-lg font-bold text-[var(--accent-green)] mb-4">Key Value Drivers</h3>
-              <ul className="space-y-2">
-                {(analysis.keyDrivers || []).map((driver, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="text-[var(--accent-green)] mt-1">•</span>
-                    <span>{driver}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {analysis.keyDrivers.length > 0 && (
+              <div className="p-6 bg-[var(--bg-secondary)] rounded-xl border border-[var(--accent-green)]/30">
+                <h3 className="text-lg font-bold text-[var(--accent-green)] mb-4">Key Value Drivers</h3>
+                <ul className="space-y-2">
+                  {analysis.keyDrivers.map((driver, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-[var(--accent-green)] mt-1">•</span>
+                      <span>{driver}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             
-            <div className="p-6 bg-[var(--bg-secondary)] rounded-xl border border-[var(--accent-burgundy)]/30">
-              <h3 className="text-lg font-bold text-[var(--accent-burgundy)] mb-4">Primary Risks</h3>
-              <ul className="space-y-2">
-                {(analysis.risks || []).map((risk, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="text-[var(--accent-burgundy)] mt-1">•</span>
-                    <span>{risk}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {analysis.risks.length > 0 && (
+              <div className="p-6 bg-[var(--bg-secondary)] rounded-xl border border-[var(--accent-burgundy)]/30">
+                <h3 className="text-lg font-bold text-[var(--accent-burgundy)] mb-4">Primary Risks</h3>
+                <ul className="space-y-2">
+                  {analysis.risks.map((risk, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-[var(--accent-burgundy)] mt-1">•</span>
+                      <span>{risk}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       )}
     </div>
+  );
+}
+
+export default function ClaudeInsights(props) {
+  return (
+    <InsightsErrorBoundary>
+      <ClaudeInsightsInner {...props} />
+    </InsightsErrorBoundary>
   );
 }

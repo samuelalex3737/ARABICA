@@ -1,5 +1,38 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Component } from 'react';
 import { defaultScenario } from './data/defaults';
+
+// Global Error Boundary — ensures the page NEVER goes blank
+class AppErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error('ARABICA Error Boundary caught:', error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ background: '#0d0b09', color: '#e8d5c4', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui' }}>
+          <div style={{ textAlign: 'center', padding: '2rem', maxWidth: '500px' }}>
+            <h1 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#c97b3a' }}>Something went wrong</h1>
+            <p style={{ marginBottom: '1rem', opacity: 0.7 }}>{this.state.error?.message || 'An unexpected error occurred.'}</p>
+            <button
+              onClick={() => { this.setState({ hasError: false, error: null }); window.location.reload(); }}
+              style={{ padding: '0.75rem 2rem', background: '#c97b3a', color: '#0d0b09', border: 'none', borderRadius: '9999px', fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem' }}
+            >
+              Reload Application
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 import { runAllCalculations } from './engine/calculations';
 import { predictAcceptProbability, checkOutOfDistribution } from './ml/inference';
 import CoffeeBeanScene from './components/webgl/CoffeeBeanScene';
@@ -134,24 +167,26 @@ function App() {
   const isOOD = useMemo(() => checkOutOfDistribution(inputs), [inputs]);
 
   return (
-    <div className="relative bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-screen font-body">
-      <SidebarNavigation />
+    <AppErrorBoundary>
+      <div className="relative bg-[var(--bg-primary)] text-[var(--text-primary)] min-h-screen font-body">
+        <SidebarNavigation />
 
-      {/* 3D Background */}
-      <div className="fixed inset-0 z-0">
-        <CoffeeBeanScene />
+        {/* 3D Background */}
+        <div className="fixed inset-0 z-0">
+          <CoffeeBeanScene />
+        </div>
+
+        {/* Main Content (scrolls over fixed background) */}
+        <main className="relative z-10 pb-32 pl-0 xl:pl-24">
+          <HeroSection />
+          <InputSection inputs={inputs} setInputs={setInputs} />
+          <MetricsSection results={results} mlProbability={mlProbability} isOOD={isOOD} inputs={inputs} />
+          <CashFlowSection results={results} inputs={inputs} />
+          <AnalysisSection inputs={inputs} />
+          <AISection inputs={inputs} results={results} mlProbability={mlProbability} />
+        </main>
       </div>
-
-      {/* Main Content (scrolls over fixed background) */}
-      <main className="relative z-10 pb-32 pl-0 xl:pl-24">
-        <HeroSection />
-        <InputSection inputs={inputs} setInputs={setInputs} />
-        <MetricsSection results={results} mlProbability={mlProbability} isOOD={isOOD} inputs={inputs} />
-        <CashFlowSection results={results} inputs={inputs} />
-        <AnalysisSection inputs={inputs} />
-        <AISection inputs={inputs} results={results} mlProbability={mlProbability} />
-      </main>
-    </div>
+    </AppErrorBoundary>
   );
 }
 
